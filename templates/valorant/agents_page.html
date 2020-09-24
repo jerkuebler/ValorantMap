@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block title %} | {{ page.title }}{% endblock title %}
+
+{% block content %}
+    <div class="row">
+        {% for child_page in self.get_children.specific %}
+            <article class="card trans-card">
+                <a href={{ child_page.url }}>
+                    <div class="card-agent-image">{% image child_page.photo fill-200x300 %}</div>
+                    <div class="card-agent-name">{{ child_page.title|richtext }}</div>
+                </a>
+            </article>
+        {% endfor %}
+    </div>
+{% endblock content %}

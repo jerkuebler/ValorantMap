@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+
+{% load static wagtailcore_tags wagtailimages_tags %}
+
+{% block title %} | {{ page.title }}{% endblock title %}
+
+{% block content %}
+    <div id="maps-content" class="row maps-content">
+        <div class="col-lg-8 text-center">
+            <div class="row justify-content-center">
+                <div class="btn-group-toggle" data-toggle="buttons">
+                    <label id="selector-btn" class="btn btn-map">
+                        <input type="radio" name="options" autocomplete="off">
+                        <img src="{% static 'valorant/icons/cursor.svg' %}" class="icon-paint" alt="pencil"/>
+                    </label>
+                    <label id="pencil-btn" class="btn btn-map">
+                        <input type="radio" name="options" autocomplete="off">
+                        <img src="{% static 'valorant/icons/pencil.svg' %}" class="icon-paint" alt="pencil"/>
+                    </label>
+                    <label id="line-btn" type="radio" class="btn btn-map">
+                        <input type="radio" name="options" autocomplete="off">
+                        <img src="{% static 'valorant/icons/arrow-down-left.svg' %}" class="icon-paint" alt="arrow"/>
+                    </label>
+                    <label id="rectangle-btn" type="radio" class="btn btn-map">
+                        <input type="radio" name="options" autocomplete="off">
+                        <img src="{% static 'valorant/icons/bounding-box.svg' %}" class="icon-paint" alt="box"/>
+                    </label>
+                    <label id="circle-btn" type="radio" class="btn btn-map">
+                        <input type="radio" name="options" autocomplete="off">
+                        <img src="{% static 'valorant/icons/circle.svg' %}" class="icon-paint" alt="circle"/>
+                    </label>
+                </div>
+                <div class="dropdown">
+                    <button id="color-dropdown"
+                            type="button"
+                            class="btn btn-map dropdown-toggle btn-paint"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                    >
+                        <label id="color-box" class="color-box"></label>
+                    </button>
+                    <div class="dropdown-menu color-dropdown" aria-labelledby="dropdownMenuButton">
+                        <label class="dropdown-item color-dropdown-box" style="background-color: black"></label>
+                        <label class="dropdown-item color-dropdown-box" style="background-color: red"></label>
+                        <label class="dropdown-item color-dropdown-box" style="background-color: green"></label>
+                        <label class="dropdown-item color-dropdown-box" style="background-color: blue"></label>
+                        <label class="dropdown-item color-dropdown-box" style="background-color: yellow"></label>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button id="font-dropdown"
+                            type="button"
+                            class="btn btn-map dropdown-toggle btn-paint"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                    >
+                        <label class="font-box"><label id="font-size" class="font-box">2</label>px</label>
+                    </button>
+                    <div class="dropdown-menu color-dropdown" aria-labelledby="dropdownMenuButton">
+                        <label class="dropdown-item font-dropdown-box">2</label>
+                        <label class="dropdown-item font-dropdown-box">3</label>
+                        <label class="dropdown-item font-dropdown-box">4</label>
+                        <label class="dropdown-item font-dropdown-box">5</label>
+                        <label class="dropdown-item font-dropdown-box">6</label>
+                    </div>
+                </div>
+                <button id="rotate-btn" type="button" class="btn btn-map btn-paint">
+                    <img src="{% static 'valorant/icons/arrow-repeat.svg' %}" class="icon-paint" alt="rotate"/>
+                </button>
+                <button id="undo-btn" type="button" class="btn btn-primary btn-paint">
+                    <img src="{% static 'valorant/icons/arrow-counterclockwise.svg' %}" class="icon-paint" alt="undo"/>
+                </button>
+                <button id="save-btn" class="btn btn-success btn-paint">Save</button>
+                <button id="reset-btn" type="button" class="btn btn-danger btn-paint">Reset</button>
+            </div>
+
+            <canvas width="700" height="700" id="map-canvas" class="map-canvas">
+                Update your browser to support HTML5 Canvas
+            </canvas>
+            <canvas width="700" height="0" id="notes-canvas" class="map-canvas">
+                Update your browser to support HTML5 Canvas
+            </canvas>
+        </div>
+        <div class="col-lg-4 side-col">
+            <div class="btn-header btn-group btn-group-toggle" data-toggle="buttons">
+                <label id="def-btn" class="btn btn-def btn-faction">
+                    <input type="radio" name="options" autocomplete="off" id="option1">
+                    <img src="{% static 'valorant/icons/shield.svg' %}" class="icon-paint" alt="pencil"/>
+                </label>
+                <label id="neutral-btn" type="radio" class="btn btn-neutral btn-faction">
+                    <input type="radio" name="options" autocomplete="off" id="option3">
+                    <img src="{% static 'valorant/icons/app.svg' %}" class="icon-paint" alt="pencil"/>
+                </label>
+                <label id="atk-btn" class="btn btn-atk btn-faction">
+                    <input type="radio" name="options" autocomplete="off" id="option2">
+                    <img src="{% static 'valorant/icons/lightning.svg' %}" class="icon-paint" alt="pencil"/>
+                </label>
+            </div>
+            <button class="btn btn-map dropdown-toggle btn-header collapsible">Maps</button>
+            <div id="collapse-maps" class="map-section">
+                {% for child_page in self.get_children.specific %}
+                    <article class="card trans-card">
+                        <div class="card-agent-image">
+                            {% image child_page.photo width-200 as tmp_photo %}
+                            <img src="{{ tmp_photo.url }}" width="{{ tmp_photo.width }}"
+                                 height="{{ tmp_photo.height }}" alt="{{ tmp_photo.alt }}"
+                                 id="{{ child_page.title }}-show" onclick="drawMap('{{ child_page.title }}')"
+                            />
+                            {% image child_page.photo width-700 as tmp_photo_hidden %}
+                            <img src="{{ tmp_photo_hidden.url }}" width="{{ tmp_photo_hidden.width }}"
+                                 height="{{ tmp_photo_hidden.height }}" alt="{{ tmp_photo_hidden.alt }}"
+                                 id="{{ child_page.title }}" style="display:none;" crossorigin="anonymous"
+                            />
+                        </div>
+                        <div class="card-agent-name">{{ child_page.title|richtext }}</div>
+                    </article>
+                {% endfor %}
+            </div>
+            <button class="btn btn-map dropdown-toggle btn-header collapsible">Agents</button>
+            <div id="collapse-agents" class="agent-section collapsed">
+                {% for agent in agents %}
+                    <article class="card trans-card">
+                        {% image agent.icon width-75 as agent_photo %}
+                        <img src="{{ agent_photo.url }}" width="{{ agent_photo.width }}"
+                             height="{{ agent_photo.height }}" alt="{{ agent_photo.alt }}"
+                             id="{{ agent.title }}-show" onclick="clickIcon('{{ agent.title }}-show')"
+                             class="agent-img" data-drag-source="true"
+                        />
+                        {% image agent.icon width-30 as agent_photo_hidden %}
+                        <img src="{{ agent_photo_hidden.url }}"
+                             width="{{ agent_photo_hidden.width }}"
+                             height="{{ agent_photo_hidden.height }}"
+                             alt="{{ agent_photo_hidden.alt }}"
+                             id="{{ agent.title }}"
+                             crossorigin="anonymous"
+                             data-drag-source="true"
+                             class="hidden-agent-img"
+                        />
+
+                        <div class="row justify-content-center">
+                            {% image agent.ability_a_img max-30x30 as abil_photo %}
+                            <div class="map-icon-box" onclick="clickIcon('{{ agent.title }}-a')">
+                                <img src="{{ abil_photo.url }}" width="{{ abil_photo.width }}"
+                                     height="{{ abil_photo.height }}" alt="{{ abil_photo.alt }}"
+                                     id="{{ agent.title }}-a" class="map-icon" crossorigin="anonymous"
+                                     data-drag-source="true"/>
+                            </div>
+                            {% image agent.ability_b_img max-30x30 as abil_photo %}
+                            <div class="map-icon-box" onclick="clickIcon('{{ agent.title }}-b')">
+                                <img src="{{ abil_photo.url }}" width="{{ abil_photo.width }}"
+                                     height="{{ abil_photo.height }}" alt="{{ abil_photo.alt }}"
+                                     id="{{ agent.title }}-b"
+                                     class="map-icon" crossorigin="anonymous" data-drag-source="true"/>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            {% image agent.ability_sig_img max-30x30 as abil_photo %}
+                            <div class="map-icon-box" onclick="clickIcon('{{ agent.title }}-sig')">
+                                <img src="{{ abil_photo.url }}" width="{{ abil_photo.width }}"
+                                     height="{{ abil_photo.height }}" alt="{{ abil_photo.alt }}"
+                                     id="{{ agent.title }}-sig"
+                                     class="map-icon" crossorigin="anonymous" data-drag-source="true"/>
+                            </div>
+                            {% image agent.ability_ult_img max-30x30 as abil_photo %}
+                            <div class="map-icon-box" onclick="clickIcon('{{ agent.title }}-ult')">
+                                <img src="{{ abil_photo.url }}" width="{{ abil_photo.width }}"
+                                     height="{{ abil_photo.height }}" alt="{{ abil_photo.alt }}"
+                                     id="{{ agent.title }}-ult"
+                                     class="map-icon" crossorigin="anonymous" data-drag-source="true"/>
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+            <button class="btn btn-map dropdown-toggle btn-header collapsible">Icons</button>
+            <div id="collapse-icons" class="row map-icon-section justify-content-center collapsed">
+                {% for icon in page.map_icons.all %}
+                    {% image icon.image max-30x30 as map_icon %}
+                    <div class="map-icon-box" onclick="clickIcon('{{ map_icon.alt }}')">
+                        <img src="{{ map_icon.url }}" alt="{{ map_icon.alt }}"
+                             id="{{ map_icon.alt }}" class="map-icon"
+                             crossorigin="anonymous" data-drag-source="true"/>
+                    </div>
+                {% endfor %}
+            </div>
+            <button class="btn btn-map dropdown-toggle btn-header collapsible">Notes</button>
+            <div id="collapse-notes" class="notes-section collapsed">
+                <button id="add-note" class="btn btn-map btn-note" onclick="note(this)">Add Note</button>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+{% block js %}
+    <script type="text/javascript" src="{% static 'valorant/js/map_editor.js' %}"></script>
+{% endblock js %}

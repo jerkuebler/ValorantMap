@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}template-homepage{% endblock body_class %}
+
+{% block title %} | {{ page.title }}{% endblock title %}
+
+{% block content %}
+    <div class="row flex-row-reverse">
+        <div class="col-md">
+            <article class="card agent-page">
+                <h1>{{ page.title|richtext }}</h1>
+                <div class="center-block">{% image page.photo width-300 %}</div>
+                <hr>
+                <div class="row char-sidebar">
+                    <p>Type:</p>
+                    {{ page.weapon_type|richtext }}
+                </div>
+                <div class="row char-sidebar">
+                    <p>Cost:</p>
+                    {{ page.cost|richtext }}
+                </div>
+                <div class="row char-sidebar">
+                    <p>Magazine:</p>
+                    {{ page.magazine|richtext }}
+                </div>
+                <div class="row char-sidebar">
+                    <p>Wall Penetration:</p>
+                    {{ page.wall_pen|richtext }}
+                </div>
+                <hr>
+                <div class="row char-sidebar">
+                    <p>Primary Fire Mode:</p>
+                    {{ page.prim_fire_mode|richtext }}
+                </div>
+                <div class="row char-sidebar">
+                    <p>Primary Fire Rate:</p>
+                    {{ page.prim_fire_rate|richtext }}
+                </div>
+                <hr>
+                <div class="row char-sidebar">
+                    <p>Secondary Fire Mode:</p>
+                    {{ page.sec_fire_mode|richtext }}
+                </div>
+                <div class="row char-sidebar">
+                    <p>Secondary Fire Rate:</p>
+                    {{ page.sec_fire_rate|richtext }}
+                </div>
+                <hr>
+                <div class="row char-sidebar">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Distance</th>
+                            <th scope="col">Head Damage</th>
+                            <th scope="col">Body Damage</th>
+                            <th scope="col">Leg Damage</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">0m - 30m</th>
+                            <td>{{ page.dam_short_head|richtext }}</td>
+                            <td>{{ page.dam_short_body|richtext }}</td>
+                            <td>{{ page.dam_short_leg|richtext }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">30m - 50m</th>
+                            <td>{{ page.dam_long_head|richtext }}</td>
+                            <td>{{ page.dam_long_body|richtext }}</td>
+                            <td>{{ page.dam_long_leg|richtext }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr>
+            </article>
+        </div>
+        <div class="col-md">
+            <article class="card agent-page">
+                <h2>Summary</h2>
+                {{ page.description|richtext }}
+            </article>
+            <article class="card agent-page">
+                {% for item in page.weapon_images.all %}
+                    <h3>{{ item.caption|richtext }}</h3>
+                    {% image item.image width-200 class="char-sidebar" %}
+                    <div class="row char-sidebar">
+                        <p>Source: </p>{{ item.source|richtext }}
+                    </div>
+                {% endfor %}
+            </article>
+        </div>
+    </div>
+{% endblock content %}

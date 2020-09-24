@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block title %} | {{ page.title }}{% endblock title %}
+
+{% block content %}
+    <div class="row flex-row-reverse">
+        <div class="col-md">
+            <article class="card agent-page">
+                <h1>{{ page.title|richtext }}</h1>
+                <div class="center-block">{% image page.photo fill-400x200 %}</div>
+                <hr>
+                <div class="row char-sidebar">
+                    {% image page.icon width-75 %}
+                </div>
+                <div class="row char-sidebar">
+                    <p>Role:</p>
+                    {{ page.char_type|richtext }}
+                    {% image page.char_type_img fill-50x50 class="icon-stretch" %}
+                </div>
+                <div class="row char-sidebar">
+                    <p>Origin:</p>
+                    {{ page.origin|richtext }}
+                    {% image page.origin_img fill-50x50 class="icon-stretch" %}
+                </div>
+                <hr>
+                <div class="row char-sidebar">
+                    <p> Preferred Side-arm: {{ page.gun_type|richtext }}</p>
+                </div>
+                {% image page.gun_img width-200 class="char-sidebar" %}
+                <p>Gunbuddy:</p>
+                {% image page.gunbuddy_img width-100 class="char-sidebar" %}
+                <hr>
+            </article>
+        </div>
+        <div class="col-md">
+            <article class="card agent-page">
+                <h2>Summary</h2>
+                {{ page.description|richtext }}
+            </article>
+            <article class="card agent-page">
+                <h3>Primary Ability</h3>
+                {{ page.ability_a|richtext }}
+                {% image page.ability_a_img width-100 class="char-sidebar" %}
+                <div class="row char-sidebar">
+                    <p>Cost: </p>{{ page.ability_a_cost|richtext }}
+                </div>
+                {{ page.ability_a_desc|richtext }}
+            </article>
+            <article class="card agent-page">
+                <h3>Secondary Ability</h3>
+                {{ page.ability_b|richtext }}
+                {% image page.ability_b_img width-100 class="char-sidebar" %}
+                <div class="row char-sidebar">
+                    <p>Cost: </p>{{ page.ability_b_cost|richtext }}
+                </div>
+                {{ page.ability_b_desc|richtext }}
+            </article>
+            <article class="card agent-page">
+                <h3>Signature Ability</h3>
+                {{ page.ability_sig|richtext }}
+                {% image page.ability_sig_img width-100 class="char-sidebar" %}
+                <div class="row char-sidebar">
+                    <p>Cost: </p>{{ page.ability_sig_cost|richtext }}
+                </div>
+                {{ page.ability_sig_desc|richtext }}
+            </article>
+            <article class="card agent-page">
+                <h3>Ultimate Ability</h3>
+                {{ page.ability_ult|richtext }}
+                {% image page.ability_ult_img width-100 class="char-sidebar" %}
+                <div class="row char-sidebar">
+                    <p>Ultimate Points per Use: </p>{{ page.ability_ult_cost|richtext }}
+                </div>
+                {{ page.ability_ult_desc|richtext }}
+            </article>
+        </div>
+    </div>
+{% endblock content %}

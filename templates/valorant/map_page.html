@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block title %} | {{ page.title }}{% endblock title %}
+
+{% block content %}
+    <div class="col-sm">
+        <article class="card agent-page">
+            <h2>{{ page.title|richtext }}</h2>
+            {{ page.description|richtext }}
+            {% image page.photo width-600 class="char-sidebar" %}
+        </article>
+    </div>
+{% endblock content %}
